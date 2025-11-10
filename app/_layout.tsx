@@ -1,24 +1,54 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import Header from '@/components/Header';
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { DataProvider } from '@/context/DataContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import '@/global.css';
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function RootLayoutContent() {
+  const { colorMode } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <GluestackUIProvider mode={colorMode}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="search"
+          options={{ 
+            headerShown: true,
+            // Use custom header component for search screen
+            header: () => <Header />,
+            presentation: 'modal'
+          }}
+        />
+        <Stack.Screen
+          name="prayer-reel"
+          options={{ 
+            headerShown: false,
+            presentation: 'fullScreenModal',
+            animation: 'slide_from_bottom'
+          }}
+        />
       </Stack>
-      <StatusBar style="auto" />
+    </GluestackUIProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <DataProvider>
+        <RootLayoutContent />
+      </DataProvider>
     </ThemeProvider>
   );
 }
