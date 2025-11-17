@@ -49,14 +49,13 @@ export default function TabLayout() {
   };
 
   const showHeader = bottomTabs.find(tab => tab.route === activeTab)?.showHeader ?? true;
-  const headerTitle = bottomTabs.find(tab => tab.route === activeTab)?.label || 'Prayer Tracker';
 
   return (
     <Box className="flex-1">
       <StatusBar />
       
       {/* Header */}
-      {showHeader && <Header title={headerTitle} />}
+      {showHeader && <Header />}
 
       {/* Content */}
       <Tabs
@@ -64,8 +63,8 @@ export default function TabLayout() {
           headerShown: false,
           tabBarStyle: { display: 'none' }, // Hide default tab bar
         }}>
+          {/* Home Screen */}
         <Tabs.Screen name="index" />
-        <Tabs.Screen name="home" options={{ href: null }} />
         <Tabs.Screen name="contacts" />
         <Tabs.Screen name="prayers" />
       </Tabs>

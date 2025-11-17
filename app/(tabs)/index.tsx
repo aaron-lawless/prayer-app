@@ -1,7 +1,7 @@
 import { Box } from '@/components/ui/box';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Heading } from '@/components/ui/heading';
+import { Heading } from '@/components/ui/heading/index.native';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Pressable } from '@/components/ui/pressable';
@@ -119,7 +119,7 @@ export default function HomeScreen() {
         {/* Start Praying View */}
         {/* TODO replace a lot of this content with helpful options */}
         <Card variant="elevated" size="lg" className="bg-white p-5 -mt-20 z-10 rounded-2xl">
-          <VStack space="md">
+          <VStack space="sm">
             <HStack className="items-center justify-between">
               <VStack space="xs">
                 <Text size="sm" className="text-typography-500 font-medium">
@@ -136,7 +136,7 @@ export default function HomeScreen() {
 
             {/* Prayer View */}
             <Button
-              className="bg-primary-500 py-4 rounded-full"
+              className="bg-primary-500 h-10 rounded-full"
               onPress={() => router.push('/prayer-reel' as any)}
             >
               <HStack space="sm" className="items-center">

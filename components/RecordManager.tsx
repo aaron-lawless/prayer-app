@@ -12,7 +12,7 @@ import {
 import { Box } from './ui/box';
 import { Button, ButtonText } from './ui/button';
 import { Fab, FabIcon } from './ui/fab';
-import { Heading } from './ui/heading';
+import { Heading } from './ui/heading/index.native';
 import { HStack } from './ui/hstack';
 import { Input, InputField, InputIcon, InputSlot } from './ui/input';
 import {
