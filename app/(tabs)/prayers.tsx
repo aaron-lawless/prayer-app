@@ -1,6 +1,5 @@
 import { Box } from '@/components/ui/box';
 import { Card } from '@/components/ui/card';
-import { Heading } from '@/components/ui/heading/index.web';
 import { HStack } from '@/components/ui/hstack';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
@@ -12,6 +11,7 @@ import { FormBuilder, FormField } from '../../components/FormBuilder';
 import { RecordManager } from '../../components/RecordManager';
 import { useData } from '../../context/DataContext';
 import { Prayer } from '../../types';
+import { Heading } from '@/components/ui/heading/index.native';
 
 export default function PrayersScreen() {
   const params = useLocalSearchParams();

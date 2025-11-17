@@ -1,6 +1,6 @@
 import { Box } from '@/components/ui/box';
 import { Card } from '@/components/ui/card';
-import { Heading } from '@/components/ui/heading/index.web';
+import { Heading } from '@/components/ui/heading/index.native';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
 import { LinearGradient } from 'expo-linear-gradient';

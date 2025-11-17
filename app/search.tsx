@@ -1,6 +1,6 @@
 import { Box } from '@/components/ui/box';
 import { Card } from '@/components/ui/card';
-import { Heading } from '@/components/ui/heading';
+import { Heading } from '@/components/ui/heading/index.native';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
@@ -122,15 +122,13 @@ export default function SearchScreen() {
       const searchableText = [
         prayer.title,
         prayer.description,
-        prayer.category,
-        ...(prayer.tags || [])
       ].filter(Boolean).join(' ').toLowerCase();
 
       if (searchableText.includes(lowerQuery)) {
         const prayerContacts = contacts.filter(c => prayer.contactIds.includes(c.id));
         const contactNames = prayerContacts.length > 0 
           ? prayerContacts.map(c => c.name).join(', ')
-          : prayer.category || 'Prayer';
+          : 'Prayer';
         
         results.push({
           type: 'prayer',
@@ -171,7 +169,7 @@ export default function SearchScreen() {
   return (
     <Box className="flex-1 bg-background-50">
       {/* Header */}
-      <Box className="bg-background-0 border-b border-outline-100">
+      <Box className="bg-background-0 border-b border-outline-100 mt-16">
         <HStack className="items-center px-4 py-3" space="md">
           <Pressable onPress={() => router.back()}>
             <Icon as={ArrowLeft} size="xl" className="text-typography-900" />
