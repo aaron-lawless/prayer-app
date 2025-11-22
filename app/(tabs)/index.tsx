@@ -8,19 +8,16 @@ import { Pressable } from '@/components/ui/pressable';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
-import { useTheme } from '@/context/ThemeContext';
 import { QuickAction } from '@/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Moon, NotebookPen, Search, Sun, User, UserPlus, View } from 'lucide-react-native';
+import { NotebookPen, Search, Settings, User, UserPlus, View } from 'lucide-react-native';
 import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useData } from '../../context/DataContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { colorMode, toggleColorMode } = useTheme();
-  const isDark = colorMode === 'dark';
   const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount } = useData();
 
   const recentPrayers = prayers.slice(0, 3);
@@ -56,7 +53,7 @@ export default function HomeScreen() {
             {/* Left Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/(tabs)/contacts' as any)}
+                onPress={() => router.push('/profile' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={User} size="lg" className="text-typography-700" />
@@ -73,10 +70,10 @@ export default function HomeScreen() {
               </Pressable>
 
               <Pressable
-                onPress={toggleColorMode}
+                onPress={() => router.push('/settings' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
-                <Icon as={isDark ? Sun : Moon} size="lg" className="text-typography-700" />
+                <Icon as={Settings} size="lg" className="text-typography-700" />
               </Pressable>
             </HStack>
           </HStack>

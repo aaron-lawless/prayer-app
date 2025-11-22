@@ -5,6 +5,8 @@ import { Contact, Prayer } from '../types';
 interface DataContextType {
   contacts: Contact[];
   prayers: Prayer[];
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
+  setPrayers: React.Dispatch<React.SetStateAction<Prayer[]>>;
   addContact: (contact: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateContact: (id: string, contact: Partial<Contact>) => Promise<void>;
   deleteContact: (id: string) => Promise<void>;
@@ -244,6 +246,8 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
       value={{
         contacts,
         prayers,
+        setContacts,
+        setPrayers,
         addContact,
         updateContact,
         deleteContact,

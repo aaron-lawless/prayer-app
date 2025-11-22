@@ -22,10 +22,27 @@ function RootLayoutContent() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="profile"
+          options={{ 
+            headerShown: true,
+            // Use custom header component for search screen
+            header: () => <Header />,
+            presentation: 'modal'
+          }}
+        />
+        <Stack.Screen
           name="search"
           options={{ 
             headerShown: true,
             // Use custom header component for search screen
+            header: () => <Header />,
+            presentation: 'modal'
+          }}
+        />
+        <Stack.Screen
+          name="settings"
+          options={{ 
+            // Use custom header component for settings screen
             header: () => <Header />,
             presentation: 'modal'
           }}
