@@ -180,13 +180,13 @@ export default function SettingsScreen() {
           />
         </VStack>
 
-        {/* App Info */}
+        {/* App Info - ideally this would come from the app.json in the future */}
         <VStack space="xs" className="items-center mt-8 mb-4">
           <Text size="xs" className="text-typography-400">
             Prayer App
           </Text>
           <Text size="xs" className="text-typography-400">
-            Version 1.0.0
+            Version 
           </Text>
         </VStack>
       </VStack>
