@@ -55,6 +55,7 @@ export default function PrayerReelScreen() {
 
   const swipeAnim = useRef(new Animated.Value(1)).current;
 
+  // Handling animate swipe hint fade out
   useEffect(() => {
     const t = setTimeout(() => {
       Animated.timing(swipeAnim, {
@@ -67,6 +68,7 @@ export default function PrayerReelScreen() {
     return () => clearTimeout(t);
   }, []);
 
+  // Prepare reel items: unanswered prayers with random backgrounds
   const reelItems = useMemo(() => {
     const unanswered = prayers.filter(p => !p.isAnswered);
     return unanswered.map(prayer => ({
@@ -76,6 +78,7 @@ export default function PrayerReelScreen() {
     }));
   }, [prayers]);
 
+  // Handle viewable items change to track current index
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems[0]?.index != null) {
@@ -93,6 +96,7 @@ export default function PrayerReelScreen() {
 
   const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
 
+  // Handle marking prayer as answered
   const handleMarkAsAnswered = async (prayerId: string) => {
     await updatePrayer(prayerId, {
       isAnswered: true,
@@ -100,6 +104,7 @@ export default function PrayerReelScreen() {
     });
   };
 
+  // Render each reel item
   const renderReelItem = ({ item }: { item: PrayerReelItem }) => {
     const { prayer, backgroundImage } = item;
     const contacts = getContactsForPrayer(prayer.id);
@@ -233,16 +238,16 @@ export default function PrayerReelScreen() {
         </Box>
       </Box>
 
-      {/* LIGHT swipe hint */}
-      {showSwipeHint && currentIndex === 0 && (
+      {/* Swipe Hint */}
+      {showSwipeHint && (
         <Animated.View
+          style={{
+            ...styles.swipeHintContainer,
+            opacity: swipeAnim,
+          }}
           pointerEvents="none"
-          style={{ ...styles.swipeHintContainer, opacity: swipeAnim }}
         >
-          <Image
-            source={require('@/assets/gif/swipe-up-2.gif')}
-            style={styles.swipeGif}
-          />
+          <Text className="text-white">Swipe up for the next prayer</Text>
         </Animated.View>
       )}
 
@@ -277,27 +282,21 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
 
-  /** REMOVE “preview of next reel”: make background fill perfectly */
   backgroundImage: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
   },
-
-  /** Light blur/diffusion overlay to reduce distraction */
   softeningOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.25)',
     zIndex: 1,
   },
-
-  /** Subtle vignette */
   vignette: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 2,
     backgroundColor: 'rgba(0,0,0,0.25)',
   },
-
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -305,40 +304,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     zIndex: 5,
   },
-
   prayerCard: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 24,
     backdropFilter: 'blur(10px)',
     minHeight: 400,
   },
-
   titleShadow: {
     textShadowColor: 'rgba(0,0,0,0.6)',
     textShadowRadius: 10,
   },
-
   closeButton: {
     position: 'absolute',
     right: 20,
     zIndex: 50,
   },
-
   counterBadge: {
     position: 'absolute',
     left: 20,
     zIndex: 50,
   },
-
   swipeHintContainer: {
     position: 'absolute',
-    bottom: 140,
+    bottom: 150,
     left: 0,
     right: 0,
     alignItems: 'center',
     zIndex: 50,
   },
-
   swipeGif: {
     width: 70,
     height: 70,

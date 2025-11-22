@@ -18,6 +18,7 @@ interface DataContextType {
   markPrayerAsViewed: (prayerId: string) => Promise<void>;
   getUnviewedPrayersCount: () => number;
   viewedPrayersToday: string[];
+  resetViewedPrayers: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -228,6 +229,16 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
     return unviewedPrayers.length;
   };
 
+  const resetViewedPrayers = async () => {
+    setViewedPrayersToday([]);
+    try {
+      await AsyncStorage.removeItem(VIEWED_PRAYERS_KEY);
+      // We keep VIEWED_DATE_KEY as it's still the same day
+    } catch (error) {
+      console.error('Error resetting viewed prayers:', error);
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -246,6 +257,7 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
         markPrayerAsViewed,
         getUnviewedPrayersCount,
         viewedPrayersToday,
+        resetViewedPrayers,
       }}>
       {children}
     </DataContext.Provider>

@@ -131,7 +131,6 @@ export default function ContactsScreen() {
           style={styles.gradientOverlay}
         />
 
-        {/* ✅ CENTERED HEADER USING NATIVEWIND-FRIENDLY FLEXBOX */}
         <Box className="absolute bottom-4 w-full items-center mb-6">
           <Heading size="xl" className="text-white">
             Contacts
