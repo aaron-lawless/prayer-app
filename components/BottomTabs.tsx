@@ -43,11 +43,13 @@ export default function BottomTabs({ activeTab, setActiveTab, tabs }: BottomTabs
               className="flex-1 items-center justify-center"
             >
               <VStack space="xs" className="items-center">
-                {/* Icon with circular background when active */}
+                {/* Icon with circular background when active - using styles to force re-render */}
                 <Box 
-                  className={`rounded-full p-2 ${
-                    isActive ? 'bg-primary-500' : 'bg-transparent'
-                  }`}
+                  key={`${tab.route}-${isActive}`}
+                  style={[
+                    styles.iconContainer,
+                    isActive && styles.activeIconContainer
+                  ]}
                 >
                   <Icon 
                     size={24} 
@@ -91,5 +93,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 8,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeIconContainer: {
+    backgroundColor: 'rgb(38, 38, 38)', // primary-500
   }
 });
