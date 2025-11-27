@@ -144,23 +144,19 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const deleteContact = async (id: string) => {
-    // Remove the contact from prayers or delete prayers if it's the only contact
+    // Remove the contact from prayers (but keep the prayer even if it has no contacts left)
     setPrayers(prev => 
       prev.map(prayer => {
-        // If this prayer has multiple contacts, just remove this one
-        if (prayer.contactIds.length > 1) {
+        // If this prayer has this contact, remove it
+        if (prayer.contactIds.includes(id)) {
           return {
             ...prayer,
             contactIds: prayer.contactIds.filter(cId => cId !== id),
             updatedAt: new Date(),
           };
         }
-        // If this is the only contact, mark for deletion
         return prayer;
-      }).filter(prayer => 
-        // Remove prayers where this is the only contact
-        !(prayer.contactIds.length === 1 && prayer.contactIds.includes(id))
-      )
+      })
     );
     setContacts(prev => prev.filter(contact => contact.id !== id));
   };

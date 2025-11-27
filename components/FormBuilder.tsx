@@ -299,45 +299,53 @@ export function FormBuilder<T>({
             )}
 
             {/* Options List */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <HStack space="sm" className="py-2">
-                {field.options?.map(option => {
-                  const isSelected = selectedValues.includes(option.id);
-                  const isDisabled = !isSelected && !!field.maxSelections && selectedValues.length >= field.maxSelections;
-                  
-                  return (
-                    <Pressable
-                      key={option.id}
-                      onPress={() => toggleSelection(option.id)}
-                      disabled={isDisabled}
-                    >
-                      <Box 
-                        className={`px-4 py-2 rounded-full ${
-                          isSelected 
-                            ? 'bg-primary-500' 
-                            : isDisabled
-                            ? 'bg-background-50 border border-outline-100'
-                            : 'bg-background-100 border border-outline-200'
-                        }`}
+            {field.options && field.options.length > 0 ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <HStack space="sm" className="py-2">
+                  {field.options.map(option => {
+                    const isSelected = selectedValues.includes(option.id);
+                    const isDisabled = !isSelected && !!field.maxSelections && selectedValues.length >= field.maxSelections;
+                    
+                    return (
+                      <Pressable
+                        key={option.id}
+                        onPress={() => toggleSelection(option.id)}
+                        disabled={isDisabled}
                       >
-                        <Text
-                          size="sm"
-                          className={
+                        <Box 
+                          className={`px-4 py-2 rounded-full ${
                             isSelected 
-                              ? 'text-white font-semibold' 
+                              ? 'bg-primary-500' 
                               : isDisabled
-                              ? 'text-typography-400'
-                              : 'text-typography-700'
-                          }
+                              ? 'bg-background-50 border border-outline-100'
+                              : 'bg-background-100 border border-outline-200'
+                          }`}
                         >
-                          {option.label}
-                        </Text>
-                      </Box>
-                    </Pressable>
-                  );
-                })}
-              </HStack>
-            </ScrollView>
+                          <Text
+                            size="sm"
+                            className={
+                              isSelected 
+                                ? 'text-white font-semibold' 
+                                : isDisabled
+                                ? 'text-typography-400'
+                                : 'text-typography-700'
+                            }
+                          >
+                            {option.label}
+                          </Text>
+                        </Box>
+                      </Pressable>
+                    );
+                  })}
+                </HStack>
+              </ScrollView>
+            ) : (
+              <Box className="py-4 px-4 bg-background-50 rounded-lg border border-outline-100">
+                <Text size="sm" className="text-typography-500 text-center">
+                  No options available
+                </Text>
+              </Box>
+            )}
             
             {field.helperText && !error && (
               <FormControlHelper>

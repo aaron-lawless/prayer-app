@@ -18,7 +18,7 @@ import { useData } from '../../context/DataContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount } = useData();
+  const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount, viewedPrayersToday } = useData();
 
   const recentPrayers = prayers.slice(0, 3);
   const unviewedCount = getUnviewedPrayersCount();
@@ -106,6 +106,16 @@ export default function HomeScreen() {
   );
   }
 
+  const getPrayerStatusText = () => {
+    if (prayers.length === 0) {
+      return 'No Prayers Yet';
+    }
+    if (unviewedCount === 0) {
+      return 'All Prayers Completed Today';
+    }
+    return `${unviewedCount} ${unviewedCount === 1 ? 'Prayer' : 'Prayers'} Remaining`;
+  };
+
   return (
     <ScrollView className="flex-1 bg-background-150">
       {/* Hero Header */}
@@ -114,7 +124,6 @@ export default function HomeScreen() {
       {/* Main Content */}
       <VStack space="lg" className="px-5 py-6">
         {/* Start Praying View */}
-        {/* TODO replace a lot of this content with helpful options */}
         <Card variant="elevated" size="lg" className="bg-white p-5 -mt-20 z-10 rounded-2xl">
           <VStack space="sm">
             <HStack className="items-center justify-between">
@@ -123,7 +132,7 @@ export default function HomeScreen() {
                   Prayer Activity Today
                 </Text>
                 <Text size="2xl" className="font-bold text-typography-900">
-                  {unviewedCount > 0 ? `${unviewedCount} ${unviewedCount === 1 ? 'Prayer' : 'Prayers'} left` : 'All Prayers Prayed For'}
+                  {getPrayerStatusText()}
                 </Text>
               </VStack>
               <Pressable>

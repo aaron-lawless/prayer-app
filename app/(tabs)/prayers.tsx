@@ -81,8 +81,8 @@ export default function PrayersScreen() {
         name: 'contactIds',
         label: 'Contacts',
         type: 'multiselect',
-        placeholder: 'Select contacts',
-        required: true,
+        placeholder: 'Select contacts (optional)',
+        required: false,
         options: contacts.map(c => ({ id: c.id, label: c.name })),
       },
       {
@@ -109,9 +109,7 @@ export default function PrayersScreen() {
     if (!formData.title || formData.title.trim() === '') {
       errors.title = 'Title is required';
     }
-    if (!formData.contactIds || formData.contactIds.length === 0) {
-      errors.contactIds = 'Please select at least one contact';
-    }
+    // contactIds are now optional
     return errors;
   };
 

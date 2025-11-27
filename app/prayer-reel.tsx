@@ -47,7 +47,7 @@ interface PrayerReelItem {
 export default function PrayerReelScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { prayers, getContactsForPrayer, markPrayerAsViewed, updatePrayer } = useData();
+  const { prayers, getContactsForPrayer, markPrayerAsViewed, updatePrayer, viewedPrayersToday } = useData();
   const flatListRef = useRef<FlatList>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,6 +77,30 @@ export default function PrayerReelScreen() {
         BACKGROUND_IMAGES[Math.floor(Math.random() * BACKGROUND_IMAGES.length)],
     }));
   }, [prayers]);
+
+  // Find the first unviewed prayer index
+  useEffect(() => {
+    if (reelItems.length > 0) {
+      const firstUnviewedIndex = reelItems.findIndex(
+        item => !viewedPrayersToday.includes(item.prayer.id)
+      );
+      
+      // If there are unviewed prayers, scroll to the first one
+      // Otherwise, stay at the beginning (index 0)
+      const startIndex = firstUnviewedIndex !== -1 ? firstUnviewedIndex : 0;
+      
+      if (startIndex > 0 && flatListRef.current) {
+        // Use setTimeout to ensure the FlatList is fully mounted
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({
+            index: startIndex,
+            animated: false,
+          });
+          setCurrentIndex(startIndex);
+        }, 100);
+      }
+    }
+  }, []); // Only run once on mount
 
   // Handle viewable items change to track current index
   const onViewableItemsChanged = useRef(
@@ -267,6 +291,13 @@ export default function PrayerReelScreen() {
           offset: SCREEN_HEIGHT * index,
           index,
         })}
+        onScrollToIndexFailed={(info) => {
+          // Handle scroll failure by waiting and trying again
+          const wait = new Promise(resolve => setTimeout(resolve, 500));
+          wait.then(() => {
+            flatListRef.current?.scrollToIndex({ index: info.index, animated: false });
+          });
+        }}
       />
     </Box>
   );
