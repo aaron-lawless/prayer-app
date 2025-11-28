@@ -23,6 +23,8 @@ interface DataContextType {
   resetViewedPrayers: () => Promise<void>;
   hasCompletedOnboarding: boolean;
   setHasCompletedOnboarding: (value: boolean) => Promise<void>;
+  userName: string;
+  setUserName: (name: string) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -32,6 +34,7 @@ const PRAYERS_KEY = '@prayer_app_prayers';
 const VIEWED_PRAYERS_KEY = '@prayer_app_viewed_prayers';
 const VIEWED_DATE_KEY = '@prayer_app_viewed_date';
 const ONBOARDING_KEY = '@prayer_app_onboarding_completed';
+const USER_NAME_KEY = '@prayer_app_user_name';
 
 export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -39,6 +42,7 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [viewedPrayersToday, setViewedPrayersToday] = useState<string[]>([]);
   const [hasCompletedOnboarding, setHasCompletedOnboardingState] = useState(false);
+  const [userName, setUserNameState] = useState('');
 
   // Load data from AsyncStorage on mount
   useEffect(() => {
@@ -61,12 +65,13 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
   const loadData = async () => {
     try {
-      const [contactsData, prayersData, viewedData, viewedDateData, onboardingData] = await Promise.all([
+      const [contactsData, prayersData, viewedData, viewedDateData, onboardingData, userNameData] = await Promise.all([
         AsyncStorage.getItem(CONTACTS_KEY),
         AsyncStorage.getItem(PRAYERS_KEY),
         AsyncStorage.getItem(VIEWED_PRAYERS_KEY),
         AsyncStorage.getItem(VIEWED_DATE_KEY),
         AsyncStorage.getItem(ONBOARDING_KEY),
+        AsyncStorage.getItem(USER_NAME_KEY),
       ]);
 
       if (contactsData) {
@@ -108,6 +113,11 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
       // Check onboarding status
       setHasCompletedOnboardingState(onboardingData === 'true');
+      
+      // Load user name
+      if (userNameData) {
+        setUserNameState(userNameData);
+      }
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -206,11 +216,12 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
 
   const clearAllData = async () => {
     try {
-      await AsyncStorage.multiRemove([CONTACTS_KEY, PRAYERS_KEY, VIEWED_PRAYERS_KEY, VIEWED_DATE_KEY, ONBOARDING_KEY]);
+      await AsyncStorage.multiRemove([CONTACTS_KEY, PRAYERS_KEY, VIEWED_PRAYERS_KEY, VIEWED_DATE_KEY, ONBOARDING_KEY, USER_NAME_KEY]);
       setContacts([]);
       setPrayers([]);
       setViewedPrayersToday([]);
       setHasCompletedOnboardingState(false);
+      setUserNameState('');
       console.log('All data cleared successfully');
     } catch (error) {
       console.error('Error clearing data:', error);
@@ -255,6 +266,15 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
     }
   };
 
+  const setUserName = async (name: string) => {
+    try {
+      await AsyncStorage.setItem(USER_NAME_KEY, name);
+      setUserNameState(name);
+    } catch (error) {
+      console.error('Error saving user name:', error);
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -278,6 +298,8 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
         resetViewedPrayers,
         hasCompletedOnboarding,
         setHasCompletedOnboarding,
+        userName,
+        setUserName,
       }}>
       {children}
     </DataContext.Provider>

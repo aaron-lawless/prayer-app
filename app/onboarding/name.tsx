@@ -12,7 +12,7 @@ import { Heading } from '@/components/ui/heading/index.native';
 
 export default function NameScreen() {
   const router = useRouter();
-  const { addContact, setHasCompletedOnboarding } = useData();
+  const { addContact, setHasCompletedOnboarding, setUserName } = useData();
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,6 +21,9 @@ export default function NameScreen() {
 
     setIsSubmitting(true);
     try {
+      // Save the user's name
+      await setUserName(name.trim());
+      
       // Create the first contact with the user's name and "Other" category
       await addContact({
         name: name.trim(),
