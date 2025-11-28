@@ -50,7 +50,7 @@ export default function HomeScreen() {
         resizeMode="cover"
       >
         <LinearGradient
-          colors={['rgba(17, 17, 17, 0.85)', 'rgba(77, 76, 76, 0.85)']}
+          colors={['rgba(17, 17, 17, 0.85)', 'rgba(47, 46, 46, 0.85)']}
           style={styles.gradientOverlay}
         >
           {/* Header Actions */}

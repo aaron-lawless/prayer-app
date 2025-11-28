@@ -9,6 +9,7 @@ import { Pressable } from '@/components/ui/pressable';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
+import { INSTRUCTION_STEPS } from '@/constants/instructions';
 import { useData } from '@/context/DataContext';
 import { useTheme } from '@/context/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -203,7 +204,6 @@ export default function SettingsScreen() {
           <ModalHeader>
             <VStack space="xs">
               <HStack space="sm" className="items-center">
-                <Icon as={BookOpen} size="lg" className="text-primary-600" />
                 <Heading size="lg" className="text-typography-900">
                   How to Use Prayer App
                 </Heading>
@@ -213,75 +213,19 @@ export default function SettingsScreen() {
           <ModalBody>
             <ScrollView className="max-h-96">
               <VStack space="lg">
-                {/* Getting Started */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    Getting Started
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    Welcome to your personal prayer companion! This app helps you organize and remember to pray for the people and situations that matter most.
-                  </Text>
-                </VStack>
-
-                {/* Adding Contacts */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    1. Add Contacts
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    Start by adding people you want to pray for. Tap the <Text className="font-semibold">"Contacts"</Text> tab and press the <Text className="font-semibold">"+"</Text> button to add a new contact with their name, email, and phone.
-                  </Text>
-                </VStack>
-
-                {/* Creating Prayers */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    2. Create Prayer Requests
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    Go to the <Text className="font-semibold">"Prayers"</Text> tab and tap <Text className="font-semibold">"+"</Text> to create a prayer request. Give it a title, description, and associate it with one or more contacts. You can also set the urgency level.
-                  </Text>
-                </VStack>
-
-                {/* Prayer View */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    3. Use Prayer View
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    From the home screen, tap <Text className="font-semibold">"Prayer View"</Text> to see your prayers one at a time. Swipe through each prayer, and the app will track which ones you've prayed for today.
-                  </Text>
-                </VStack>
-
-                {/* Mark as Answered */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    4. Mark Prayers as Answered
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    When God answers a prayer, edit the prayer request and mark it as <Text className="font-semibold">"Answered"</Text>. Answered prayers won't appear in your daily prayer view.
-                  </Text>
-                </VStack>
-
-                {/* Search */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    5. Search & Organize
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    Use the search icon on the home screen to quickly find specific prayers or contacts. You can filter by urgency, status, or search by keywords.
-                  </Text>
-                </VStack>
-
-                {/* Daily Routine */}
-                <VStack space="sm">
-                  <Text size="md" className="font-bold text-typography-900">
-                    Daily Prayer Routine
-                  </Text>
-                  <Text size="sm" className="text-typography-700 leading-5">
-                    Each day, open the app and use Prayer View to go through your prayer list. The counter on the home screen shows how many prayers you haven't prayed for yet today. Your viewed prayers reset each day.
-                  </Text>
-                </VStack>
+                {INSTRUCTION_STEPS.map((step, index) => (
+                  <VStack key={index} space="sm">
+                    <HStack space="sm" className="items-center">
+                      <Icon as={step.icon} size="sm" className="text-primary-600" />
+                      <Text size="md" className="font-bold text-typography-900">
+                        {index === 0 ? step.title : `${index}. ${step.title}`}
+                      </Text>
+                    </HStack>
+                    <Text size="sm" className="text-typography-700 leading-5">
+                      {step.description}
+                    </Text>
+                  </VStack>
+                ))}
               </VStack>
             </ScrollView>
           </ModalBody>

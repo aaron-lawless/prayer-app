@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BookOpen, Users, Plus, Eye, Check, Search, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { Button, ButtonText } from '@/components/ui/button';
@@ -9,41 +9,9 @@ import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { Heading } from '@/components/ui/heading/index.native';
 import { useData } from '@/context/DataContext';
+import { INSTRUCTION_STEPS } from '@/constants/instructions';
 
 const { width, height } = Dimensions.get('window');
-
-const INSTRUCTION_STEPS = [
-  {
-    icon: BookOpen,
-    title: 'Getting Started',
-    description: 'Welcome to your personal prayer companion! This app helps you organize and remember to pray for the people and situations that matter most.',
-  },
-  {
-    icon: Users,
-    title: 'Add Contacts',
-    description: 'Start by adding people you want to pray for. Tap the "Contacts" tab and press the "+" button to add a new contact with their name, email, and phone.',
-  },
-  {
-    icon: Plus,
-    title: 'Create Prayer Requests',
-    description: 'Go to the "Prayers" tab and tap "+" to create a prayer request. Give it a title, description, and associate it with one or more contacts.',
-  },
-  {
-    icon: Eye,
-    title: 'Use Prayer View',
-    description: 'From the home screen, tap "Prayer View" to see your prayers one at a time. Swipe through each prayer, and the app will track which ones you\'ve prayed for today.',
-  },
-  {
-    icon: Check,
-    title: 'Mark Prayers as Answered',
-    description: 'When God answers a prayer, edit the prayer request and mark it as "Answered". Answered prayers won\'t appear in your daily prayer view.',
-  },
-  {
-    icon: Search,
-    title: 'Search & Organize',
-    description: 'Use the search icon on the home screen to quickly find specific prayers or contacts. You can filter by status or search by keywords.',
-  },
-];
 
 export default function InstructionsScreen() {
   const router = useRouter();
