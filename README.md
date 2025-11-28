@@ -12,14 +12,13 @@ A cross-platform mobile app for managing prayer requests, contacts, and daily pr
 - Quick actions for adding contacts and prayers
 - Recent prayers overview
 - Local device storage (no cloud sync)
-- Beautiful UI with NativeWind and custom components
+-  UI with NativeWind and custom components
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js (LTS recommended)
 - Yarn or npm
-- Expo CLI (`npm install -g expo-cli`)
 - Android Studio or Xcode for device emulation (optional)
 
 ### Installation
@@ -59,8 +58,5 @@ my-app/
 
 ## Local Storage
 - All data is stored locally on the device using AsyncStorage.
-- No cloud sync or remote database required. (YET)
+- No cloud sync or remote database required. (future enhacement)
 
-
-## License
-MIT

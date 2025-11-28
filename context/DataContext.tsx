@@ -5,6 +5,8 @@ import { Contact, Prayer } from '../types';
 interface DataContextType {
   contacts: Contact[];
   prayers: Prayer[];
+  setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
+  setPrayers: React.Dispatch<React.SetStateAction<Prayer[]>>;
   addContact: (contact: Omit<Contact, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
   updateContact: (id: string, contact: Partial<Contact>) => Promise<void>;
   deleteContact: (id: string) => Promise<void>;
@@ -18,6 +20,7 @@ interface DataContextType {
   markPrayerAsViewed: (prayerId: string) => Promise<void>;
   getUnviewedPrayersCount: () => number;
   viewedPrayersToday: string[];
+  resetViewedPrayers: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -141,23 +144,19 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const deleteContact = async (id: string) => {
-    // Remove the contact from prayers or delete prayers if it's the only contact
+    // Remove the contact from prayers (but keep the prayer even if it has no contacts left)
     setPrayers(prev => 
       prev.map(prayer => {
-        // If this prayer has multiple contacts, just remove this one
-        if (prayer.contactIds.length > 1) {
+        // If this prayer has this contact, remove it
+        if (prayer.contactIds.includes(id)) {
           return {
             ...prayer,
             contactIds: prayer.contactIds.filter(cId => cId !== id),
             updatedAt: new Date(),
           };
         }
-        // If this is the only contact, mark for deletion
         return prayer;
-      }).filter(prayer => 
-        // Remove prayers where this is the only contact
-        !(prayer.contactIds.length === 1 && prayer.contactIds.includes(id))
-      )
+      })
     );
     setContacts(prev => prev.filter(contact => contact.id !== id));
   };
@@ -228,11 +227,23 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
     return unviewedPrayers.length;
   };
 
+  const resetViewedPrayers = async () => {
+    setViewedPrayersToday([]);
+    try {
+      await AsyncStorage.removeItem(VIEWED_PRAYERS_KEY);
+      // We keep VIEWED_DATE_KEY as it's still the same day
+    } catch (error) {
+      console.error('Error resetting viewed prayers:', error);
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
         contacts,
         prayers,
+        setContacts,
+        setPrayers,
         addContact,
         updateContact,
         deleteContact,
@@ -246,6 +257,7 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
         markPrayerAsViewed,
         getUnviewedPrayersCount,
         viewedPrayersToday,
+        resetViewedPrayers,
       }}>
       {children}
     </DataContext.Provider>

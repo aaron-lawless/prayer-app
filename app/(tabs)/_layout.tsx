@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import { Box } from '@/components/ui/box';
 import { Routes } from '@/types';
 import { Tabs, usePathname, useRouter } from 'expo-router';
-import { Heart, Home, Users } from 'lucide-react-native';
+import { Heart, Home, Settings, Users } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'react-native';
 

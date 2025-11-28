@@ -47,7 +47,7 @@ interface PrayerReelItem {
 export default function PrayerReelScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { prayers, getContactsForPrayer, markPrayerAsViewed, updatePrayer } = useData();
+  const { prayers, getContactsForPrayer, markPrayerAsViewed, updatePrayer, viewedPrayersToday } = useData();
   const flatListRef = useRef<FlatList>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -55,6 +55,7 @@ export default function PrayerReelScreen() {
 
   const swipeAnim = useRef(new Animated.Value(1)).current;
 
+  // Handling animate swipe hint fade out
   useEffect(() => {
     const t = setTimeout(() => {
       Animated.timing(swipeAnim, {
@@ -67,6 +68,7 @@ export default function PrayerReelScreen() {
     return () => clearTimeout(t);
   }, []);
 
+  // Prepare reel items: unanswered prayers with random backgrounds
   const reelItems = useMemo(() => {
     const unanswered = prayers.filter(p => !p.isAnswered);
     return unanswered.map(prayer => ({
@@ -76,6 +78,31 @@ export default function PrayerReelScreen() {
     }));
   }, [prayers]);
 
+  // Find the first unviewed prayer index
+  useEffect(() => {
+    if (reelItems.length > 0) {
+      const firstUnviewedIndex = reelItems.findIndex(
+        item => !viewedPrayersToday.includes(item.prayer.id)
+      );
+      
+      // If there are unviewed prayers, scroll to the first one
+      // Otherwise, stay at the beginning (index 0)
+      const startIndex = firstUnviewedIndex !== -1 ? firstUnviewedIndex : 0;
+      
+      if (startIndex > 0 && flatListRef.current) {
+        // Use setTimeout to ensure the FlatList is fully mounted
+        setTimeout(() => {
+          flatListRef.current?.scrollToIndex({
+            index: startIndex,
+            animated: false,
+          });
+          setCurrentIndex(startIndex);
+        }, 100);
+      }
+    }
+  }, []); // Only run once on mount
+
+  // Handle viewable items change to track current index
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       if (viewableItems[0]?.index != null) {
@@ -93,6 +120,7 @@ export default function PrayerReelScreen() {
 
   const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
 
+  // Handle marking prayer as answered
   const handleMarkAsAnswered = async (prayerId: string) => {
     await updatePrayer(prayerId, {
       isAnswered: true,
@@ -100,6 +128,7 @@ export default function PrayerReelScreen() {
     });
   };
 
+  // Render each reel item
   const renderReelItem = ({ item }: { item: PrayerReelItem }) => {
     const { prayer, backgroundImage } = item;
     const contacts = getContactsForPrayer(prayer.id);
@@ -233,16 +262,16 @@ export default function PrayerReelScreen() {
         </Box>
       </Box>
 
-      {/* LIGHT swipe hint */}
-      {showSwipeHint && currentIndex === 0 && (
+      {/* Swipe Hint */}
+      {showSwipeHint && (
         <Animated.View
+          style={{
+            ...styles.swipeHintContainer,
+            opacity: swipeAnim,
+          }}
           pointerEvents="none"
-          style={{ ...styles.swipeHintContainer, opacity: swipeAnim }}
         >
-          <Image
-            source={require('@/assets/gif/swipe-up-2.gif')}
-            style={styles.swipeGif}
-          />
+          <Text className="text-white">Swipe up for the next prayer</Text>
         </Animated.View>
       )}
 
@@ -262,6 +291,13 @@ export default function PrayerReelScreen() {
           offset: SCREEN_HEIGHT * index,
           index,
         })}
+        onScrollToIndexFailed={(info) => {
+          // Handle scroll failure by waiting and trying again
+          const wait = new Promise(resolve => setTimeout(resolve, 500));
+          wait.then(() => {
+            flatListRef.current?.scrollToIndex({ index: info.index, animated: false });
+          });
+        }}
       />
     </Box>
   );
@@ -277,27 +313,21 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
   },
 
-  /** REMOVE “preview of next reel”: make background fill perfectly */
   backgroundImage: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
   },
-
-  /** Light blur/diffusion overlay to reduce distraction */
   softeningOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.25)',
     zIndex: 1,
   },
-
-  /** Subtle vignette */
   vignette: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 2,
     backgroundColor: 'rgba(0,0,0,0.25)',
   },
-
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -305,40 +335,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     zIndex: 5,
   },
-
   prayerCard: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     borderRadius: 24,
     backdropFilter: 'blur(10px)',
     minHeight: 400,
   },
-
   titleShadow: {
     textShadowColor: 'rgba(0,0,0,0.6)',
     textShadowRadius: 10,
   },
-
   closeButton: {
     position: 'absolute',
     right: 20,
     zIndex: 50,
   },
-
   counterBadge: {
     position: 'absolute',
     left: 20,
     zIndex: 50,
   },
-
   swipeHintContainer: {
     position: 'absolute',
-    bottom: 140,
+    bottom: 150,
     left: 0,
     right: 0,
     alignItems: 'center',
     zIndex: 50,
   },
-
   swipeGif: {
     width: 70,
     height: 70,

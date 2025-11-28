@@ -8,20 +8,17 @@ import { Pressable } from '@/components/ui/pressable';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Text } from '@/components/ui/text';
 import { VStack } from '@/components/ui/vstack';
-import { useTheme } from '@/context/ThemeContext';
 import { QuickAction } from '@/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Moon, NotebookPen, Search, Sun, User, UserPlus, View } from 'lucide-react-native';
+import { NotebookPen, Search, Settings, User, UserPlus, View } from 'lucide-react-native';
 import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useData } from '../../context/DataContext';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { colorMode, toggleColorMode } = useTheme();
-  const isDark = colorMode === 'dark';
-  const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount } = useData();
+  const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount, viewedPrayersToday } = useData();
 
   const recentPrayers = prayers.slice(0, 3);
   const unviewedCount = getUnviewedPrayersCount();
@@ -56,7 +53,7 @@ export default function HomeScreen() {
             {/* Left Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/(tabs)/contacts' as any)}
+                onPress={() => router.push('/profile' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={User} size="lg" className="text-typography-700" />
@@ -73,10 +70,10 @@ export default function HomeScreen() {
               </Pressable>
 
               <Pressable
-                onPress={toggleColorMode}
+                onPress={() => router.push('/settings' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
-                <Icon as={isDark ? Sun : Moon} size="lg" className="text-typography-700" />
+                <Icon as={Settings} size="lg" className="text-typography-700" />
               </Pressable>
             </HStack>
           </HStack>
@@ -109,6 +106,16 @@ export default function HomeScreen() {
   );
   }
 
+  const getPrayerStatusText = () => {
+    if (prayers.length === 0) {
+      return 'No Prayers Yet';
+    }
+    if (unviewedCount === 0) {
+      return 'All Prayers Completed Today';
+    }
+    return `${unviewedCount} ${unviewedCount === 1 ? 'Prayer' : 'Prayers'} Remaining`;
+  };
+
   return (
     <ScrollView className="flex-1 bg-background-150">
       {/* Hero Header */}
@@ -117,7 +124,6 @@ export default function HomeScreen() {
       {/* Main Content */}
       <VStack space="lg" className="px-5 py-6">
         {/* Start Praying View */}
-        {/* TODO replace a lot of this content with helpful options */}
         <Card variant="elevated" size="lg" className="bg-white p-5 -mt-20 z-10 rounded-2xl">
           <VStack space="sm">
             <HStack className="items-center justify-between">
@@ -126,7 +132,7 @@ export default function HomeScreen() {
                   Prayer Activity Today
                 </Text>
                 <Text size="2xl" className="font-bold text-typography-900">
-                  {unviewedCount > 0 ? `${unviewedCount} ${unviewedCount === 1 ? 'Prayer' : 'Prayers'} left` : 'All Prayers Prayed For'}
+                  {getPrayerStatusText()}
                 </Text>
               </VStack>
               <Pressable>

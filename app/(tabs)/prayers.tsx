@@ -81,8 +81,8 @@ export default function PrayersScreen() {
         name: 'contactIds',
         label: 'Contacts',
         type: 'multiselect',
-        placeholder: 'Select contacts',
-        required: true,
+        placeholder: 'Select contacts (optional)',
+        required: false,
         options: contacts.map(c => ({ id: c.id, label: c.name })),
       },
       {
@@ -109,9 +109,7 @@ export default function PrayersScreen() {
     if (!formData.title || formData.title.trim() === '') {
       errors.title = 'Title is required';
     }
-    if (!formData.contactIds || formData.contactIds.length === 0) {
-      errors.contactIds = 'Please select at least one contact';
-    }
+    // contactIds are now optional
     return errors;
   };
 
@@ -138,14 +136,13 @@ export default function PrayersScreen() {
 
   return (
     <Box className="flex-1 bg-black">
-      {/* Gradient Background */}
+
       <Box style={{ position: 'relative', height: 100 }}>
         <LinearGradient
           colors={['rgba(17,17,17,0.85)', 'rgba(77,76,76,0.85)']}
           style={styles.gradientOverlay}
         />
 
-        {/* Centered Header */}
         <Box className="absolute bottom-4 w-full items-center mb-6">
           <Heading size="xl" className="text-white">
             Prayers
@@ -153,7 +150,6 @@ export default function PrayersScreen() {
         </Box>
       </Box>
 
-      {/* Record Manager */}
       <RecordManager
         records={prayers}
         onAdd={handleAdd}
@@ -167,6 +163,7 @@ export default function PrayersScreen() {
           { label: 'Unanswered', value: 'unanswered' },
           { label: 'Answered', value: 'answered' },
         ]}
+        //Custom filter logic
         filterRecord={(prayer, searchQuery, currentFilter) => {
           // Search filter
           const matchesSearch = !searchQuery.trim() || 
