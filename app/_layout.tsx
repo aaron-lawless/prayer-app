@@ -22,11 +22,17 @@ function RootLayoutContent() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="onboarding/welcome"
+          name="(onboarding)/welcome"
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="onboarding/name"
+          name="(onboarding)/name"
+          options={{ 
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="(onboarding)/instructions"
           options={{ 
             headerShown: false,
           }}

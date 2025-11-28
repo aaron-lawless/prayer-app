@@ -49,7 +49,7 @@ export default function SettingsScreen() {
       Alert.alert('Success', 'All data has been cleared', [
         {
           text: 'OK',
-          onPress: () => router.replace('/onboarding/welcome')
+          onPress: () => router.replace('/welcome')
         }
       ]);
     } catch (error) {

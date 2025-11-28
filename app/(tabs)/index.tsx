@@ -58,7 +58,7 @@ export default function HomeScreen() {
             {/* Left Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/profile' as any)}
+                onPress={() => router.push('/(tabs)/profile' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={User} size="lg" className="text-typography-700" />
@@ -68,14 +68,14 @@ export default function HomeScreen() {
             {/* Right Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/search' as any)}
+                onPress={() => router.push('/(modal)/search' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={Search} size="lg" className="text-typography-700" />
               </Pressable>
 
               <Pressable
-                onPress={() => router.push('/settings' as any)}
+                onPress={() => router.push('/(modal)/settings' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={Settings} size="lg" className="text-typography-700" />
@@ -148,7 +148,7 @@ export default function HomeScreen() {
             {/* Prayer View */}
             <Button
               className="bg-primary-500 h-10 rounded-full"
-              onPress={() => router.push('/prayer-reel' as any)}
+              onPress={() => router.push('/(modal)/prayer-reel' as any)}
             >
               <HStack space="sm" className="items-center">
                 <Icon as={View} size="lg" className="text-white" />

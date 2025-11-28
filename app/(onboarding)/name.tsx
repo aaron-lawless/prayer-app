@@ -32,7 +32,7 @@ export default function NameScreen() {
       });
 
       // Navigate to the instructions screen
-      router.push('/onboarding/instructions');
+      router.push('/instructions');
     } catch (error) {
       console.error('Error creating contact:', error);
       setIsSubmitting(false);

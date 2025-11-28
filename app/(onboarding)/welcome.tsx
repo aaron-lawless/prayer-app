@@ -54,7 +54,7 @@ export default function WelcomeScreen() {
           <Button
             size="xl"
             className="bg-white rounded-full"
-            onPress={() => router.push('/onboarding/name')}
+            onPress={() => router.push('/name')}
           >
             <ButtonText className="text-black font-semibold text-lg">
               Let's Get Started

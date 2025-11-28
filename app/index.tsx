@@ -38,7 +38,7 @@ export default function Index() {
 
   // If user hasn't completed onboarding, show welcome screen
   if (!hasCompletedOnboarding) {
-    return <Redirect href="/onboarding/welcome" />;
+    return <Redirect href="/welcome" />;
   }
 
   // Otherwise, go to main app
