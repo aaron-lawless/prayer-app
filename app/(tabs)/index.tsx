@@ -58,7 +58,7 @@ export default function HomeScreen() {
             {/* Left Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/(tabs)/profile' as any)}
+                onPress={() => router.push('/(modal)/profile' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={User} size="lg" className="text-typography-700" />

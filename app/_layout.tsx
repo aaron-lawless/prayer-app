@@ -17,65 +17,10 @@ function RootLayoutContent() {
   return (
     <GluestackUIProvider mode={colorMode}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="index"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="(onboarding)/welcome"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="(onboarding)/name"
-          options={{ 
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="(onboarding)/instructions"
-          options={{ 
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="profile"
-          options={{ 
-            headerShown: true,
-            // Use custom header component for search screen
-            header: () => <Header />,
-            presentation: 'modal'
-          }}
-        />
-        <Stack.Screen
-          name="search"
-          options={{ 
-            headerShown: true,
-            // Use custom header component for search screen
-            header: () => <Header />,
-            presentation: 'modal'
-          }}
-        />
-        <Stack.Screen
-          name="settings"
-          options={{ 
-            headerShown: true,
-            // Use custom header component for settings screen
-            header: () => <Header />,
-            presentation: 'modal'
-          }}
-        />
-        <Stack.Screen
-          name="prayer-reel"
-          options={{ 
-            headerShown: false,
-            presentation: 'fullScreenModal',
-            animation: 'slide_from_bottom'
-          }}
-        />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(onboarding)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(modal)" />
       </Stack>
     </GluestackUIProvider>
   );

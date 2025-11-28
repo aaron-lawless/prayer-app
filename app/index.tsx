@@ -5,7 +5,6 @@ import SplashScreen from '@/components/SplashScreen';
 
 export default function Index() {
   const { loading, hasCompletedOnboarding } = useData();
-  const [showSplash, setShowSplash] = useState(true);
   const [startFadeOut, setStartFadeOut] = useState(false);
   const [splashComplete, setSplashComplete] = useState(false);
 

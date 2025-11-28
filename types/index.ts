@@ -40,7 +40,6 @@ export interface Routes {
   icon: LucideIcon;
   label: string;
   route: string;
-  showHeader: boolean;
 }
 
 export interface QuickAction {
