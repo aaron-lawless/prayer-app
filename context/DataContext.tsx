@@ -229,16 +229,20 @@ export const DataProvider: React.FC<{children: ReactNode}> = ({children}) => {
   };
 
   const markPrayerAsViewed = async (prayerId: string) => {
-    if (!viewedPrayersToday.includes(prayerId)) {
-      const updatedViewed = [...viewedPrayersToday, prayerId];
-      setViewedPrayersToday(updatedViewed);
-      try {
-        await AsyncStorage.setItem(VIEWED_PRAYERS_KEY, JSON.stringify(updatedViewed));
-        await AsyncStorage.setItem(VIEWED_DATE_KEY, new Date().toDateString());
-      } catch (error) {
-        console.error('Error saving viewed prayer:', error);
+    setViewedPrayersToday(currentViewed => {
+      if (currentViewed.includes(prayerId)) {
+        return currentViewed;
       }
-    }
+      
+      const updatedViewed = [...currentViewed, prayerId];
+      
+      // Save to AsyncStorage
+      AsyncStorage.setItem(VIEWED_PRAYERS_KEY, JSON.stringify(updatedViewed))
+        .then(() => AsyncStorage.setItem(VIEWED_DATE_KEY, new Date().toDateString()))
+        .catch(error => console.error('Error saving viewed prayer:', error));
+      
+      return updatedViewed;
+    });
   };
 
   const getUnviewedPrayersCount = (): number => {

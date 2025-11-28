@@ -12,7 +12,6 @@ import {
   Animated,
   Dimensions,
   FlatList,
-  Image,
   ImageBackground,
   Platform,
   StyleSheet,
@@ -23,25 +22,25 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const BACKGROUND_IMAGES = [
-  { source: require('@/assets/images/bible-light.avif'), theme: 'dark' },
-  { source: require('@/assets/images/bible2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/church-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/church2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/clouds-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/clouds2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/ocean-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/praise2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/sunrise-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/sunrise2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/sunset-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/sunset2-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/worship-dark.avif'), theme: 'dark' },
-  { source: require('@/assets/images/worship2-dark.avif'), theme: 'dark' },
+  require('@/assets/images/bible-light.avif'),
+  require('@/assets/images/bible2-dark.avif'),
+  require('@/assets/images/church-dark.avif'),
+  require('@/assets/images/church2-dark.avif'),
+  require('@/assets/images/clouds-dark.avif'),
+  require('@/assets/images/clouds2-dark.avif'),
+  require('@/assets/images/ocean-dark.avif'),
+  require('@/assets/images/praise2-dark.avif'),
+  require('@/assets/images/sunrise-dark.avif'),
+  require('@/assets/images/sunrise2-dark.avif'),
+  require('@/assets/images/sunset-dark.avif'),
+  require('@/assets/images/sunset2-dark.avif'),
+  require('@/assets/images/worship-dark.avif'),
+  require('@/assets/images/worship2-dark.avif'),
 ];
 
 interface PrayerReelItem {
   prayer: Prayer;
-  backgroundImage: (typeof BACKGROUND_IMAGES)[number];
+  backgroundImage: any;
 }
 
 export default function PrayerReelScreen() {
@@ -49,6 +48,7 @@ export default function PrayerReelScreen() {
   const insets = useSafeAreaInsets();
   const { prayers, getContactsForPrayer, markPrayerAsViewed, updatePrayer, viewedPrayersToday } = useData();
   const flatListRef = useRef<FlatList>(null);
+  const currentIndexRef = useRef(0); // Ref to track current index for cleanup
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSwipeHint, setShowSwipeHint] = useState(true);
@@ -78,54 +78,62 @@ export default function PrayerReelScreen() {
     }));
   }, [prayers]);
 
-  // Find the first unviewed prayer index
+  // Initialize: scroll to first unviewed prayer and mark it as viewed
   useEffect(() => {
-    if (reelItems.length > 0) {
-      const firstUnviewedIndex = reelItems.findIndex(
-        item => !viewedPrayersToday.includes(item.prayer.id)
-      );
-      
-      // If there are unviewed prayers, scroll to the first one
-      // Otherwise, stay at the beginning (index 0)
-      const startIndex = firstUnviewedIndex !== -1 ? firstUnviewedIndex : 0;
-      
-      if (startIndex > 0 && flatListRef.current) {
-        // Use setTimeout to ensure the FlatList is fully mounted
-        setTimeout(() => {
-          flatListRef.current?.scrollToIndex({
-            index: startIndex,
-            animated: false,
-          });
-          setCurrentIndex(startIndex);
-        }, 100);
+    if (reelItems.length === 0) return;
+
+    const firstUnviewedIndex = reelItems.findIndex(
+      item => !viewedPrayersToday.includes(item.prayer.id)
+    );
+    const startIndex = firstUnviewedIndex !== -1 ? firstUnviewedIndex : 0;
+
+    if (startIndex > 0) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({ index: startIndex, animated: false });
+        setCurrentIndex(startIndex);
+        currentIndexRef.current = startIndex;
+        if (reelItems[startIndex]) {
+          markPrayerAsViewed(reelItems[startIndex].prayer.id);
+        }
+      }, 100);
+    } else {
+      if (reelItems[startIndex]) {
+        markPrayerAsViewed(reelItems[startIndex].prayer.id);
       }
     }
-  }, []); // Only run once on mount
 
-  // Handle viewable items change to track current index
+    // Cleanup: mark current prayer when leaving screen
+    return () => {
+      const idx = currentIndexRef.current;
+      if (reelItems[idx]) {
+        markPrayerAsViewed(reelItems[idx].prayer.id);
+      }
+    };
+  }, [reelItems]);
+
+  // Track current prayer and mark as viewed when scrolling
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems[0]?.index != null) {
-        const index = viewableItems[0].index;
+      const index = viewableItems[0]?.index;
+      if (index != null && reelItems[index]) {
         setCurrentIndex(index);
-        
-        // Mark the viewed prayer as viewed
-        const viewedPrayer = reelItems[index];
-        if (viewedPrayer) {
-          markPrayerAsViewed(viewedPrayer.prayer.id);
-        }
+        currentIndexRef.current = index;
+        markPrayerAsViewed(reelItems[index].prayer.id);
       }
     }
   ).current;
 
   const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
 
-  // Handle marking prayer as answered
-  const handleMarkAsAnswered = async (prayerId: string) => {
-    await updatePrayer(prayerId, {
-      isAnswered: true,
-      dateAnswered: new Date(),
-    });
+  // Ensure last viewed prayer is marked on scroll end
+  const handleMomentumScrollEnd = () => {
+    if (reelItems[currentIndex]) {
+      markPrayerAsViewed(reelItems[currentIndex].prayer.id);
+    }
+  };
+
+  const handleMarkAsAnswered = (prayerId: string) => {
+    updatePrayer(prayerId, { isAnswered: true, dateAnswered: new Date() });
   };
 
   // Render each reel item
@@ -133,15 +141,11 @@ export default function PrayerReelScreen() {
     const { prayer, backgroundImage } = item;
     const contacts = getContactsForPrayer(prayer.id);
 
-    const isLight = backgroundImage.theme === 'light';
-    const textPrimary = "text-white";
-    const textSecondary = "text-gray-200";
-
     return (
       <Box style={styles.reelItem}>
         {/* Background */}
         <ImageBackground
-          source={backgroundImage.source}
+          source={backgroundImage}
           style={styles.backgroundImage}
           resizeMode="cover"
         >
@@ -152,10 +156,7 @@ export default function PrayerReelScreen() {
           <Box style={styles.vignette} />
 
           {/* Content */}
-          <VStack style={styles.content} space="xl">
-            {/* Rounded container for prayer content */}
-            {/* <Box style={styles.prayerCard}> */}
-              <VStack space="lg" className="px-8 py-10">
+          <VStack style={styles.content} space="lg" className="px-8 py-10">
 
                 {/* Prayer title */}
                 <Text
@@ -176,7 +177,7 @@ export default function PrayerReelScreen() {
                 {/* Contacts (Chips UX) */}
                 {contacts.length > 0 && (
                   <VStack space="sm" className="items-center">
-                    <Text size="md" className={`font-semibold ${textPrimary}`}>
+                    <Text size="md" className="font-semibold text-white">
                       Praying for:
                     </Text>
 
@@ -212,25 +213,22 @@ export default function PrayerReelScreen() {
                   </Text>
                 </Pressable>
               </VStack>
-            {/* </Box> */}
-          </VStack>
         </ImageBackground>
       </Box>
     );
   };
 
-  /** Empty State */
+  // Empty state
   if (reelItems.length === 0) {
     return (
       <Box style={styles.container}>
-        <Box style={{ ...styles.closeButton, top: insets.top + 10 }}>
-          <Pressable
-            onPress={() => router.back()}
-            className="bg-black/50 p-3 rounded-full"
-          >
-            <X size={24} color="white" />
-          </Pressable>
-        </Box>
+        <Pressable 
+          onPress={() => router.back()}
+          style={{ ...styles.closeButton, top: insets.top + 10 }}
+          className="bg-black/50 p-3 rounded-full"
+        >
+          <X size={24} color="white" />
+        </Pressable>
 
         <VStack className="flex-1 items-center justify-center px-6" space="md">
           <Text size="2xl" className="text-white font-bold text-center">
@@ -246,12 +244,14 @@ export default function PrayerReelScreen() {
 
   return (
     <Box style={styles.container}>
-      {/* Close */}
-      <Box style={{ ...styles.closeButton, top: insets.top + 10 }}>
-        <Pressable onPress={() => router.back()} className="bg-black/50 p-3 rounded-full">
-          <X size={24} color="white" />
-        </Pressable>
-      </Box>
+      {/* Close button */}
+      <Pressable 
+        onPress={() => router.back()}
+        style={{ ...styles.closeButton, top: insets.top + 10 }}
+        className="bg-black/50 p-3 rounded-full"
+      >
+        <X size={24} color="white" />
+      </Pressable>
 
       {/* Counter */}
       <Box style={{ ...styles.counterBadge, top: insets.top + 10 }}>
@@ -291,6 +291,7 @@ export default function PrayerReelScreen() {
           offset: SCREEN_HEIGHT * index,
           index,
         })}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         onScrollToIndexFailed={(info) => {
           // Handle scroll failure by waiting and trying again
           const wait = new Promise(resolve => setTimeout(resolve, 500));
@@ -312,7 +313,6 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     width: SCREEN_WIDTH,
   },
-
   backgroundImage: {
     width: '100%',
     height: '100%',
@@ -335,16 +335,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     zIndex: 5,
   },
-  prayerCard: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 24,
-    backdropFilter: 'blur(10px)',
-    minHeight: 400,
-  },
-  titleShadow: {
-    textShadowColor: 'rgba(0,0,0,0.6)',
-    textShadowRadius: 10,
-  },
   closeButton: {
     position: 'absolute',
     right: 20,
@@ -362,10 +352,5 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     zIndex: 50,
-  },
-  swipeGif: {
-    width: 70,
-    height: 70,
-    opacity: 0.7,
   },
 });

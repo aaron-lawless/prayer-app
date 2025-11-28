@@ -26,7 +26,7 @@ const INSTRUCTION_STEPS = [
   {
     icon: Plus,
     title: 'Create Prayer Requests',
-    description: 'Go to the "Prayers" tab and tap "+" to create a prayer request. Give it a title, description, and associate it with one or more contacts. You can also set the urgency level.',
+    description: 'Go to the "Prayers" tab and tap "+" to create a prayer request. Give it a title, description, and associate it with one or more contacts.',
   },
   {
     icon: Eye,
@@ -41,7 +41,7 @@ const INSTRUCTION_STEPS = [
   {
     icon: Search,
     title: 'Search & Organize',
-    description: 'Use the search icon on the home screen to quickly find specific prayers or contacts. You can filter by urgency, status, or search by keywords.',
+    description: 'Use the search icon on the home screen to quickly find specific prayers or contacts. You can filter by status or search by keywords.',
   },
 ];
 

@@ -12,16 +12,21 @@ import { QuickAction } from '@/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { NotebookPen, Search, Settings, User, UserPlus, View } from 'lucide-react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useData } from '../../context/DataContext';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount, viewedPrayersToday } = useData();
+  const [unviewedCount, setUnviewedCount] = useState(getUnviewedPrayersCount());
 
   const recentPrayers = prayers.slice(0, 3);
-  const unviewedCount = getUnviewedPrayersCount();
+  
+  // Update unviewed count whenever viewedPrayersToday or prayers changes
+  useEffect(() => {
+    setUnviewedCount(getUnviewedPrayersCount());
+  }, [viewedPrayersToday, prayers]);
 
   const QuickActions : QuickAction[] = [
     {
