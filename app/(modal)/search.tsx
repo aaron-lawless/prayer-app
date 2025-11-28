@@ -260,22 +260,13 @@ export default function SearchScreen() {
                             {result.title}
                           </Text>
                           <Box 
-                            className={`px-2 py-1 rounded ${
-                              result.type === 'contact' 
-                                ? 'bg-primary-100' 
-                                : 'bg-secondary-100'
-                            }`}
+                            className="px-2 py-1 rounded bg-primary-100"
                           >
                             <Text 
                               size="xs" 
-                              className={`font-medium ${
-                                result.type === 'contact'
-                                  ? 'text-primary-700'
-                                  : 'text-secondary-700'
-                              }`}
+                              className="font-medium text-primary-700"
                             >
-                              {/* TODO change this from icons to proper icons */}
-                              {result.type === 'contact' ? '👤 Contact' : '🙏 Prayer'}
+                              {result.type === 'contact' ? 'Contact' : 'Prayer'}
                             </Text>
                           </Box>
                         </HStack>

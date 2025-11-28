@@ -23,19 +23,16 @@ export default function TabLayout() {
       icon: Home,
       label: 'Home',
       route: 'index',
-      showHeader: true
     },
     {
       icon: Users,
       label: 'Contacts',
       route: 'contacts',
-      showHeader: true
     },
     {
       icon: Heart,
       label: 'Prayers',
       route: 'prayers',
-      showHeader: true
     },
   ];
 
@@ -48,19 +45,13 @@ export default function TabLayout() {
     }
   };
 
-  const showHeader = bottomTabs.find(tab => tab.route === activeTab)?.showHeader ?? true;
-
   return (
     <Box className="flex-1">
       <StatusBar />
-      
-      {/* Header */}
-      {showHeader && <Header />}
-
-      {/* Content */}
       <Tabs
         screenOptions={{
-          headerShown: false,
+          headerShown: true,
+          header: () => <Header />,
           tabBarStyle: { display: 'none' }, // Hide default tab bar
         }}>
           {/* Home Screen */}

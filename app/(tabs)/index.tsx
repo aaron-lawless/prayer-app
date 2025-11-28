@@ -12,16 +12,21 @@ import { QuickAction } from '@/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { NotebookPen, Search, Settings, User, UserPlus, View } from 'lucide-react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { useData } from '../../context/DataContext';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { contacts, prayers, getContactsForPrayer, clearAllData, getUnviewedPrayersCount, viewedPrayersToday } = useData();
+  const [unviewedCount, setUnviewedCount] = useState(getUnviewedPrayersCount());
 
   const recentPrayers = prayers.slice(0, 3);
-  const unviewedCount = getUnviewedPrayersCount();
+  
+  // Update unviewed count whenever viewedPrayersToday or prayers changes
+  useEffect(() => {
+    setUnviewedCount(getUnviewedPrayersCount());
+  }, [viewedPrayersToday, prayers]);
 
   const QuickActions : QuickAction[] = [
     {
@@ -45,7 +50,7 @@ export default function HomeScreen() {
         resizeMode="cover"
       >
         <LinearGradient
-          colors={['rgba(17, 17, 17, 0.85)', 'rgba(77, 76, 76, 0.85)']}
+          colors={['rgba(17, 17, 17, 0.85)', 'rgba(47, 46, 46, 0.85)']}
           style={styles.gradientOverlay}
         >
           {/* Header Actions */}
@@ -53,7 +58,7 @@ export default function HomeScreen() {
             {/* Left Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/profile' as any)}
+                onPress={() => router.push('/(modal)/profile' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={User} size="lg" className="text-typography-700" />
@@ -63,14 +68,14 @@ export default function HomeScreen() {
             {/* Right Actions */}
             <HStack space="md" className="items-center">
               <Pressable
-                onPress={() => router.push('/search' as any)}
+                onPress={() => router.push('/(modal)/search' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={Search} size="lg" className="text-typography-700" />
               </Pressable>
 
               <Pressable
-                onPress={() => router.push('/settings' as any)}
+                onPress={() => router.push('/(modal)/settings' as any)}
                 className="bg-white rounded-full p-3 shadow"
               >
                 <Icon as={Settings} size="lg" className="text-typography-700" />
@@ -143,7 +148,7 @@ export default function HomeScreen() {
             {/* Prayer View */}
             <Button
               className="bg-primary-500 h-10 rounded-full"
-              onPress={() => router.push('/prayer-reel' as any)}
+              onPress={() => router.push('/(modal)/prayer-reel' as any)}
             >
               <HStack space="sm" className="items-center">
                 <Icon as={View} size="lg" className="text-white" />

@@ -13,7 +13,7 @@ import { router } from 'expo-router';
 import { ArrowLeft, CheckCircle, Clock, Heart, User, Users } from 'lucide-react-native';
 
 export default function ProfileScreen() {
-  const { prayers, contacts } = useData();
+  const { prayers, contacts, userName } = useData();
 
   // Calculate stats
   const answeredPrayers = prayers.filter(p => p.isAnswered).length;
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
           </Avatar>
           <VStack space="xs" className="items-center">
             <Text size="xl" className="text-typography-600 font-semibold">
-                Profile View
+                {userName || 'User'}
             </Text>
           </VStack>
         </VStack>
