@@ -1,17 +1,39 @@
 import { Redirect } from 'expo-router';
-import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useData } from '@/context/DataContext';
+import SplashScreen from '@/components/SplashScreen';
 
 export default function Index() {
   const { loading, hasCompletedOnboarding } = useData();
+  const [showSplash, setShowSplash] = useState(true);
+  const [startFadeOut, setStartFadeOut] = useState(false);
+  const [splashComplete, setSplashComplete] = useState(false);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  useEffect(() => {
+    // Minimum splash display time
+    const timer = setTimeout(() => {
+      if (!loading) {
+        setStartFadeOut(true);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Start fade out when loading is done (after minimum time)
+    if (!loading) {
+      const timer = setTimeout(() => setStartFadeOut(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  const handleFadeComplete = () => {
+    setSplashComplete(true);
+  };
+
+  if (!splashComplete) {
+    return <SplashScreen onFadeComplete={startFadeOut ? handleFadeComplete : undefined} />;
   }
 
   // If user hasn't completed onboarding, show welcome screen
