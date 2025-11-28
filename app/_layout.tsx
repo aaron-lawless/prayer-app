@@ -27,7 +27,9 @@ function RootLayoutContent() {
         />
         <Stack.Screen
           name="onboarding/name"
-          options={{ headerShown: false }}
+          options={{ 
+            headerShown: false,
+          }}
         />
         <Stack.Screen
           name="(tabs)"

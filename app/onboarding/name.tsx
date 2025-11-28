@@ -31,11 +31,8 @@ export default function NameScreen() {
         notes: 'My profile',
       });
 
-      // Mark onboarding as complete
-      await setHasCompletedOnboarding(true);
-
-      // Navigate to the main app
-      router.replace('/(tabs)');
+      // Navigate to the instructions screen
+      router.push('/onboarding/instructions');
     } catch (error) {
       console.error('Error creating contact:', error);
       setIsSubmitting(false);
