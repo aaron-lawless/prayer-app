@@ -45,7 +45,12 @@ export default function SettingsScreen() {
     try {
       await clearAllData();
       setShowModal(null);
-      Alert.alert('Success', 'All contacts and associated prayers have been removed');
+      Alert.alert('Success', 'All data has been cleared', [
+        {
+          text: 'OK',
+          onPress: () => router.replace('/onboarding/welcome')
+        }
+      ]);
     } catch (error) {
       console.error('Error clearing contacts:', error);
       Alert.alert('Error', 'Failed to clear contacts');

@@ -8,7 +8,7 @@ import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import '@/global.css';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  initialRouteName: 'index',
 };
 
 function RootLayoutContent() {
@@ -16,7 +16,19 @@ function RootLayoutContent() {
 
   return (
     <GluestackUIProvider mode={colorMode}>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="index"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="onboarding/welcome"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="onboarding/name"
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="(tabs)"
           options={{ headerShown: false }}
@@ -42,6 +54,7 @@ function RootLayoutContent() {
         <Stack.Screen
           name="settings"
           options={{ 
+            headerShown: true,
             // Use custom header component for settings screen
             header: () => <Header />,
             presentation: 'modal'
